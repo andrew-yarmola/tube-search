@@ -1,0 +1,7 @@
+#!/bin/bash
+
+while read -r line;
+do
+  echo "$line"
+  ../bin/treecat --killed_by "$line" -r  /scratch/network/yarmola/marg_sym_param/merge_live "" > "boxes_$line"
+done < $1 

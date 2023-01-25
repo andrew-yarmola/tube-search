@@ -1,0 +1,146 @@
+
+inline double re_center(const AJRC& z) {
+  return z.f.re; 
+}
+
+inline const AJRC operator-(const AJRC&x) {
+
+	return AJRC(-x.f, -x.z0, -x.z1, -x.z2, -x.z3, x.e);
+
+}
+
+inline const AJRC conj(const AJRC&x) {
+
+	return AJRC(conj(x.f), conj(x.z0), conj(x.z1), conj(x.z2), conj(x.z3), x.e);
+
+}
+
+inline const AJRC re(const AJRC&x) {
+
+	return AJRC(re(x.f), re(x.z0), re(x.z1), re(x.z2), re(x.z3), x.e);
+
+}
+
+inline const AJRC im(const AJRC&x) {
+
+	return AJRC(im(x.f), im(x.z0), im(x.z1), im(x.z2), im(x.z3), x.e);
+
+}
+
+inline const AJRC abs_sqrd(const AJRC& x) {
+
+  return re(x) * re(x) + im(x) * im(x);
+
+}
+
+inline const AJRC abs_re(const AJRC& x) {
+  // returns a jet approximating |re(x)|
+  // TODO: CHECK THIS!!!
+  double D = fabs(x.f.re) - (1 + EPS) * (x.size_re + x.e); 
+  if (!(D > 0)) {
+    return AJRC(0, 0, 0, 0, 0, (1 + 2 * EPS) * (fabs(x.f.re) + (x.size_re + x.e)); 
+  } else if (x.f.re < 0) {
+    return re(-x);
+  } else {
+    return re(x);
+  }
+
+}
+
+inline const AJRC abs(const AJRC& x) {
+
+  return sqrt(abs_sqrd(x));
+
+}
+
+inline const AJRC operator+(const AJRC&x, const AJRC&y) {
+
+	AComplex r_f  = x.f  + y.f;
+	AComplex r_z0 = x.z0 + y.z0;
+	AComplex r_z1 = x.z1 + y.z1;
+	AComplex r_z2 = x.z2 + y.z2;
+	AComplex r_z3 = x.z3 + y.z3;
+	// See Lemma 7.1 of GMT
+	double r_error = (1 + 3 * EPS) *
+        (((x.e + y.e) + r_f.e) + ((r_z0.e + r_z1.e) + (r_z2.e + r_z4.e)));
+
+    return AJRC(r_f.z, r_z0.z, r_z1.z, r_z2.z, r_z3.z, r_error);
+
+}
+
+inline const AJRC operator-(const AJRC&x,const AJRC&y) {
+
+	AComplex r_f  = x.f  - y.f;
+	AComplex r_z0 = x.z0 - y.z0;
+	AComplex r_z1 = x.z1 - y.z1;
+	AComplex r_z2 = x.z2 - y.z2;
+	AComplex r_z3 = x.z3 - y.z3;
+	// See Lemma 7.1 of GMT
+	double r_error = (1 + 3 * EPS) *
+        (((x.e + y.e) + r_f.e) + ((r_z0.e + r_z1.e) + (r_z2.e + r_z4.e)));
+
+    return AJRC(r_f.z, r_z0.z, r_z1.z, r_z2.z, r_z3.z, r_error);
+
+}
+inline const AJRC operator+(const AJRC&x,double y) {
+
+	AComplex r_f = x.f + y;
+	return AJRC(r_f.z, x.z0, x.z1, x.z2, x.z4, 
+			  (1 + EPS) * (x.e + r_f.e));
+
+}
+
+inline const AJRC operator-(const AJRC&x,double y) {
+
+	AComplex r_f = x.f - y;
+	return AJRC(r_f.z, x.z0, x.z1, x.z2, x.z4, 
+			  (1 + EPS) * (x.e + r_f.e));
+
+}
+
+inline const AJRC operator*(const AJRC&x,double y) {
+
+	AComplex r_f  = x.f  * y;
+	AComplex r_z0 = x.z0 * y;
+	AComplex r_z1 = x.z1 * y;
+	AComplex r_z2 = x.z2 * y;
+	AComplex r_z3 = x.z3 * y;
+	double r_error = (1 + 3 * EPS) * 
+        ((r_f.e + (x.e * fabs(y))) + 
+	        ((r_z0.e + r_z1.e) + (r_z2.e + r_z3.e)));
+
+    return AJRC(r_f.z, r_z0.z, r_z1.z, r_z2.z, r_z3.z, r_error);
+
+}
+
+inline const AJRC operator/(const AJRC&x,double y) {
+
+	AComplex r_f  = x.f  / y;
+	AComplex r_z0 = x.z0 / y;
+	AComplex r_z1 = x.z1 / y;
+	AComplex r_z2 = x.z2 / y;
+	AComplex r_z3 = x.z3 / y;
+	double r_error = (1 + 3 * EPS) * 
+        ((r_f.e + (x.e / fabs(y))) + 
+	        ((r_z0.e + r_z1.e) + (r_z2.e + r_z3.e)));
+
+    return AJRC(r_f.z, r_z0.z, r_z1.z, r_z2.z, r_z3.z, r_error);
+
+}
+
+inline const double absUB(const AJRC&x) {
+
+	return (1 + 2 * EPS) * (absUB(x.f) + (size(x) + x.e));
+
+}
+
+inline const double absLB(const AJRC&x) {
+
+	double v = (1 - EPS) * (absLB(x.f) - (1 + EPS) * (size(x) + x.e));
+	return (v > 0) ? v : 0;
+
+}
+
+inline const double size(const AJRC&x) {
+	return x.size;
+}

@@ -1,0 +1,15 @@
+#!/bin/bash
+
+out_dir="/scratch/network/yarmola/marg_sym_param/batch"
+words="/u/yarmola/margsym/margulis-search/words"
+impossible="/u/yarmola/margsym/margulis-search/impossible"
+bad_relators="/u/yarmola/margsym/margulis-search/bad_relators"
+
+m_bnd=1.32
+r_bnd=1.48
+
+while read b
+do
+  echo "$b"
+  echo 0 | /u/yarmola/margsym/margulis-search/bin/refine_marg --fill_holes --box "$b" --max_depth 150 --truncate_depth 6 --invent_depth 70 --max_size 3000000 --words "$words" --word_search_depth 6 -m $m_bnd -r $r_bnd --impossible "$impossible" --bad_relators "$bad_relators" > "$out_dir/${b}.out" 2> "$out_dir/${b}.err"
+done

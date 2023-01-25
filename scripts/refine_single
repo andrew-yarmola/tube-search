@@ -1,0 +1,29 @@
+#!/bin/bash
+
+#data_dir="single"
+data_dir="/scratch/network/yarmola/margulis/single"
+name="box"
+
+if [ ! -d "$data_dir" ]; then
+    mkdir "$data_dir"
+fi
+
+if [[ $# > 0 ]]; then
+    box="$1"
+fi
+
+if [[ $# > 1 ]]; then
+    name="$1"
+    box="$2"
+fi
+
+test="0"
+
+m_bnd="1.3165"
+r_bnd="3.068861"
+
+cmd="echo $test | ../bin/refine_marg --debug --box $box --max_depth 90 --truncate_depth 24 --invent_depth 70 --max_size 3000000 --words ../words --word_search_depth 6 -m $m_bnd -r $r_bnd --impossible ../impossible > $data_dir/$name.out 2> $data_dir/$name.err"
+
+echo "$cmd"
+
+eval "$cmd"

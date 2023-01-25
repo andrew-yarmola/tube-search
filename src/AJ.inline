@@ -1,0 +1,140 @@
+
+inline double re_center(const AJ& z) {
+  return z.f.re;
+}
+
+inline const AJ operator-(const AJ&x) {
+
+	return AJ(-x.f,-x.z0,-x.z1,-x.z2,-x.w0,-x.w1,-x.w2,x.e);
+
+}
+
+inline const AJ conj(const AJ&x) {
+
+	return AJ(conj(x.f),conj(x.w0),conj(x.w1),conj(x.w2),conj(x.z0),conj(x.z1),conj(x.z2),x.e);
+
+}
+
+inline const AJ re(const AJ&x) {
+
+	return (x + conj(x)) * 0.5;
+
+}
+
+inline const AJ im(const AJ&x) {
+
+	return ((x - conj(x)) * eye(AJ())) * 0.5;
+
+}
+
+inline const AJ abs_sqrd(const AJ& x) {
+
+  return x * conj(x);
+
+}
+
+inline const AJ abs(const AJ& x) {
+
+  return sqrt(abs_sqrd(x));
+
+}
+
+inline const AJ operator+(const AJ&x,const AJ&y) {
+
+	AComplex r_f = x.f+y.f;
+	AComplex r_z0 = x.z0+y.z0;
+	AComplex r_z1 = x.z1+y.z1;
+	AComplex r_z2 = x.z2+y.z2;
+	AComplex r_w0 = x.w0+y.w0;
+	AComplex r_w1 = x.w1+y.w1;
+	AComplex r_w2 = x.w2+y.w2;
+	// See Lemma 7.1 of GMT
+	double r_error = (1+3*EPS)*
+						 ((x.e+(r_z0.e+r_w0.e))+
+						  ((y.e+(r_z1.e+r_w1.e))+
+						   (r_f.e+(r_z2.e+r_w2.e))));
+  return AJ(r_f.z,r_z0.z,r_z1.z,r_z2.z,r_w0.z,r_w1.z,r_w2.z,r_error);
+
+}
+
+inline const AJ operator-(const AJ&x,const AJ&y) {
+
+	AComplex r_f = x.f-y.f;
+	AComplex r_z0 = x.z0-y.z0;
+	AComplex r_z1 = x.z1-y.z1;
+	AComplex r_z2 = x.z2-y.z2;
+	AComplex r_w0 = x.w0-y.w0;
+	AComplex r_w1 = x.w1-y.w1;
+	AComplex r_w2 = x.w2-y.w2;
+	// See Lemma 7.1 of GMT
+	double r_error = (1+3*EPS)*
+						 ((x.e+(r_z0.e+r_w0.e))+
+						  ((y.e+(r_z1.e+r_w1.e))+
+						   (r_f.e+(r_z2.e+r_w2.e))));
+  return AJ(r_f.z,r_z0.z,r_z1.z,r_z2.z,r_w0.z,r_w1.z,r_w2.z,r_error);
+
+}
+inline const AJ operator+(const AJ&x,double y) {
+
+	AComplex r_f = x.f+y;
+	return AJ(r_f.z,x.z0,x.z1,x.z2,x.w0,x.w1,x.w2,
+			  (1+EPS)*(x.e+r_f.e));
+
+}
+
+inline const AJ operator-(const AJ&x,double y) {
+
+	AComplex r_f = x.f-y;
+	return AJ(r_f.z,x.z0,x.z1,x.z2,x.w0,x.w1,x.w2,
+			  (1+EPS)*(x.e+r_f.e));
+
+}
+
+inline const AJ operator*(const AJ&x,double y) {
+
+	AComplex r_f = x.f*y;
+	AComplex r_z0 = x.z0*y;
+	AComplex r_z1 = x.z1*y;
+	AComplex r_z2 = x.z2*y;
+	AComplex r_w0 = x.w0*y;
+	AComplex r_w1 = x.w1*y;
+	AComplex r_w2 = x.w2*y;
+	double r_error = (1+3*EPS)*(
+                  r_f.e + (((x.e*fabs(y))   + (r_z0.e+r_w0.e))+
+						               ((r_z1.e+r_w1.e) + (r_z2.e+r_w2.e))));
+  return AJ(r_f.z,r_z0.z,r_z1.z,r_z2.z,r_w0.z,r_w1.z,r_w2.z,r_error);
+
+}
+
+inline const AJ operator/(const AJ&x,double y) {
+
+	AComplex r_f = x.f/y;
+	AComplex r_z0 = x.z0/y;
+	AComplex r_z1 = x.z1/y;
+	AComplex r_z2 = x.z2/y;
+	AComplex r_w0 = x.w0/y;
+	AComplex r_w1 = x.w1/y;
+	AComplex r_w2 = x.w2/y;
+	double r_error = (1+3*EPS)*(
+                  r_f.e + (((x.e/fabs(y))   + (r_z0.e+r_w0.e))+
+						               ((r_z1.e+r_w1.e) + (r_z2.e+r_w2.e))));
+	return AJ(r_f.z,r_z0.z,r_z1.z,r_z2.z,r_w0.z,r_w1.z,r_w2.z,r_error);
+
+}
+
+inline const double absUB(const AJ&x) {
+
+	return (1+2*EPS)*(absUB(x.f)+(size(x)+x.e));
+
+}
+
+inline const double absLB(const AJ&x) {
+
+	double v = (1-EPS) * (absLB(x.f)-(1 + EPS) * (size(x) + x.e));
+	return (v > 0) ? v : 0;
+
+}
+
+inline const double size(const AJ&x) {
+	return x.size;
+}

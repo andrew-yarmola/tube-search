@@ -1,0 +1,124 @@
+inline const XComplex operator-(const XComplex&x) {
+
+	return XComplex(-x.re,-x.im);
+
+}
+
+inline const XComplex conj(const XComplex&x) {
+
+	return XComplex(x.re,-x.im);
+
+}
+
+inline const XComplex re(const XComplex&x) {
+
+	return XComplex(x.re,0);
+
+}
+
+inline const XComplex imag(const XComplex&x) {
+
+	return XComplex(x.im,0);
+
+}
+
+inline const AComplex operator+(const XComplex&x,const XComplex&y) {
+
+	double re= x.re+y.re;
+	double im= x.im+y.im;
+	double e= HALFEPS*((1+EPS)*(fabs(re)+fabs(im)));
+	return AComplex(re,im,e);
+
+}
+
+inline const AComplex operator+(const XComplex&x,double y) {
+
+	double re= x.re+y;
+	double e= HALFEPS*fabs(re);
+	return AComplex(re,x.im,e);
+
+}
+
+inline const AComplex operator+(const AComplex&x,const AComplex&y) {
+
+	double re= x.z.re+y.z.re;
+	double im= x.z.im+y.z.im;
+	double e= (1+2*EPS)*(HALFEPS*(fabs(re)+fabs(im))+(x.e+y.e));
+	return AComplex(re,im,e);
+
+}
+
+inline const AComplex operator-(const XComplex&x,const XComplex&y) {
+
+	double re= x.re-y.re;
+	double im= x.im-y.im;
+	double e= HALFEPS*((1+EPS)*(fabs(re)+fabs(im)));
+	return AComplex(re,im,e);
+
+}
+
+inline const AComplex operator-(const XComplex&x,double y) {
+
+	double re= x.re-y;
+	double e= HALFEPS*fabs(re);
+	return AComplex(re,x.im,e);
+
+}
+
+inline const AComplex operator-(const AComplex&x,const AComplex&y) {
+
+	double re= x.z.re-y.z.re;
+	double im= x.z.im-y.z.im;
+	double e= (1+2*EPS)*(HALFEPS*(fabs(re)+fabs(im))+(x.e+y.e));
+	return AComplex(re,im,e);
+
+}
+
+inline const AComplex operator*(const XComplex&x,const XComplex&y) {
+
+	double re1= x.re*y.re,re2= x.im*y.im;
+	double im1= x.re*y.im,im2= x.im*y.re;
+	double e= EPS*((1+2*EPS)*((fabs(re1)+fabs(re2))+(fabs(im1)+fabs(im2))));
+	return AComplex(re1-re2,im1+im2,e);
+
+}
+
+inline const AComplex operator*(const XComplex&x,double y) {
+
+	double re= x.re*y;
+	double im= x.im*y;
+	return AComplex(re,im,HALFEPS*((1+EPS)*(fabs(re)+fabs(im))));
+
+}
+
+inline const AComplex operator/(const XComplex&x,double y) {
+
+	double re= x.re/y;
+	double im= x.im/y;
+	return AComplex(re,im,HALFEPS*((1+EPS)*(fabs(re)+fabs(im))));
+
+}
+
+inline const double absLB(const XComplex&x) {
+
+	return(1-2*EPS)*hypot(x.re,x.im);
+
+}
+
+inline const double absLB(const AComplex&x) {
+
+	double v = (1-EPS) * ((1-2*EPS)*hypot(x.z.re,x.z.im) - x.e);
+  return (v > 0) ? v : 0; 
+}
+
+inline const double absUB(const XComplex&x) {
+
+	return(1+2*EPS)*hypot(x.re,x.im);
+
+}
+
+inline const double absUB(const AComplex&x) {
+
+	return (1+EPS)*((1+2*EPS)*hypot(x.z.re, x.z.im) + x.e);
+
+}

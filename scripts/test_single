@@ -1,0 +1,20 @@
+#!/bin/bash
+
+data_dir="search_test"
+name="box"
+
+if [ ! -d "$data_dir" ]; then
+    mkdir "$data_dir"
+fi
+
+if [[ $# > 0 ]]; then
+    box="$1"
+fi
+
+if [[ $# > 1 ]]; then
+    name="$1"
+    box="$2"
+fi
+
+../bin/treecat -r $data_dir "" | ../bin/search_test --box "$box" --max_depth 100 --truncate_depth 64 --invent_depth 80 --fill_holes --max_size 3000000 > "$data_dir/$name.out" 2> "$data_dir/$name.err"
+
